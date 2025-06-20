@@ -1,0 +1,27 @@
+name: Deploy Multiple Environments to GitHub Pages
+
+on:
+  push:
+    branches:
+      - time
+      - secret
+      - viewer
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+          publish_dir: ./
+
+          # Deploy to folder matching branch name inside gh-pages branch
+          destination_dir: ${{ github.ref == 'refs/heads/time' && 'time' || github.ref == 'refs/heads/secret' && 'secret' || github.ref == 'refs/heads/viewer' && 'viewer' }}
+
+          publish_branch: gh-pages
